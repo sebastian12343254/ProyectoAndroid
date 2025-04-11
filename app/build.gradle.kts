@@ -43,4 +43,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.itextpdf:itext7-core:7.1.15")
     implementation ("com.google.code.gson:gson:2.9.0")
+    implementation ("com.google.android.material:material:1.10.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
 }

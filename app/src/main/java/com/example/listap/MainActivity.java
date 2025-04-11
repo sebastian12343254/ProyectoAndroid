@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -304,12 +306,14 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         boolean isEditing = productoAEditar != null;
 
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_agregar_producto, null);
-        final EditText editNombre = dialogView.findViewById(R.id.editNombre);
-        final EditText editPrecio = dialogView.findViewById(R.id.editPrecio);
-        final EditText editUnidad = dialogView.findViewById(R.id.editUnidad); // <-- OBTENER REFERENCIA
+        final TextInputLayout inputLayoutNombre = dialogView.findViewById(R.id.inputLayoutNombre);
+        final TextInputEditText editNombre = dialogView.findViewById(R.id.editNombre);
+        final TextInputLayout inputLayoutPrecio = dialogView.findViewById(R.id.inputLayoutPrecio);
+        final TextInputEditText editPrecio = dialogView.findViewById(R.id.editPrecio);
+        final TextInputLayout inputLayoutUnidad = dialogView.findViewById(R.id.inputLayoutUnidad);
+        final TextInputEditText editUnidad = dialogView.findViewById(R.id.editUnidad);
         final Spinner spinnerCategoriaAgregar = dialogView.findViewById(R.id.spinnerCategoriaAgregar);
 
-        // ... (configuración del spinner de categoría como antes) ...
         // Configurar Spinner de categorías en el diálogo (sin la opción "Todos")
         ArrayAdapter<CharSequence> adapterCategoriaOriginal = ArrayAdapter.createFromResource(this,
                 R.array.categorias, android.R.layout.simple_spinner_item);
@@ -325,22 +329,20 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         adapterDialogo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategoriaAgregar.setAdapter(adapterDialogo);
 
-
         // Si estamos editando, llenar los campos con los datos existentes
         if (isEditing) {
             editNombre.setText(productoAEditar.getNombre());
             editPrecio.setText(String.format(Locale.US, "%.2f", productoAEditar.getPrecio()));
-            // Poblar unidad (si es null o "uds.", dejar vacío el campo para que el hint se vea)
             String unidadActual = productoAEditar.getUnidad();
             if (unidadActual != null && !unidadActual.equalsIgnoreCase("uds.")) {
-                editUnidad.setText(unidadActual); // <-- POBLAR UNIDAD AL EDITAR
+                editUnidad.setText(unidadActual);
             } else {
-                editUnidad.setText(""); // Dejar vacío para que se vea el hint "uds..."
+                editUnidad.setText("");
             }
             int spinnerPosition = adapterDialogo.getPosition(productoAEditar.getCategoria());
             spinnerCategoriaAgregar.setSelection(spinnerPosition >= 0 ? spinnerPosition : 0);
         } else {
-            editUnidad.setText(""); // Asegurar que esté vacío al agregar
+            editUnidad.setText("");
         }
 
         new AlertDialog.Builder(this)
@@ -349,35 +351,44 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                 .setPositiveButton(isEditing ? R.string.dialog_button_guardar : R.string.dialog_button_agregar, (dialog, which) -> {
                     String nombre = editNombre.getText().toString().trim();
                     String precioStr = editPrecio.getText().toString().trim();
-                    String unidad = editUnidad.getText().toString().trim(); // <-- OBTENER UNIDAD
+                    String unidad = editUnidad.getText().toString().trim();
                     String categoriaSeleccionadaDialogo = spinnerCategoriaAgregar.getSelectedItem().toString();
 
-                    // ... (Validaciones de nombre y precio como antes) ...
+                    boolean valido = true;
+
                     if (TextUtils.isEmpty(nombre)) {
-                        Toast.makeText(this, R.string.toast_nombre_vacio, Toast.LENGTH_SHORT).show();
-                        return;
+                        inputLayoutNombre.setError(getString(R.string.toast_nombre_vacio));
+                        valido = false;
+                    } else {
+                        inputLayoutNombre.setError(null); // Limpiar error si existe
                     }
-                    double precio;
+
+                    double precio = 0;
                     try {
                         precio = Double.parseDouble(precioStr);
-                        if (precio < 0) throw new NumberFormatException("Precio negativo no permitido");
+                        if (precio < 0) {
+                            inputLayoutPrecio.setError(getString(R.string.toast_precio_invalido));
+                            valido = false;
+                        } else {
+                            inputLayoutPrecio.setError(null);
+                        }
                     } catch (NumberFormatException e) {
-                        Toast.makeText(this, R.string.toast_precio_invalido, Toast.LENGTH_SHORT).show();
-                        return;
+                        inputLayoutPrecio.setError(getString(R.string.toast_precio_invalido));
+                        valido = false;
                     }
 
+                    if (!valido) {
+                        return; // Detener si hay errores
+                    }
 
                     if (isEditing) {
-                        // Actualizar el producto existente
                         productoAEditar.setNombre(nombre);
                         productoAEditar.setPrecio(precio);
                         productoAEditar.setCategoria(categoriaSeleccionadaDialogo);
-                        productoAEditar.setUnidad(unidad); // <-- ACTUALIZAR UNIDAD
+                        productoAEditar.setUnidad(unidad);
                     } else {
-                        // Crear nuevo producto (el constructor maneja el default de unidad si está vacía)
-                        // Usamos la cantidad inicial que teníamos antes (o la que desees por defecto)
-                        int cantidadInicial = 1; // Puedes cambiarla si prefieres
-                        Producto nuevo = new Producto(nombre, precio, cantidadInicial, false, categoriaSeleccionadaDialogo, unidad); // <-- PASAR UNIDAD AL CONSTRUCTOR
+                        int cantidadInicial = 1;
+                        Producto nuevo = new Producto(nombre, precio, cantidadInicial, false, categoriaSeleccionadaDialogo, unidad);
                         listaProductos.add(nuevo);
                     }
 
@@ -388,8 +399,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                 .setNegativeButton(R.string.dialog_button_cancelar, null)
                 .show();
     }
-
-    // --- Cálculo del Total ---
 
     private void actualizarTotal() {
         double total = 0;

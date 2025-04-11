@@ -1,80 +1,111 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:background="?android:attr/selectableItemBackground">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <CheckBox
         android:id="@+id/checkAñadido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="16dp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtNombre"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:padding="4px"
+            tools:text="Nombre del Producto" />
+
 
         <TextView
             android:id="@+id/txtPrecio"
-            android:textColor="?android:attr/textColorSecondary"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            android:padding="4px"
+            tools:text="$12.99" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editCantidad"
-                android:hint="Cant"
-                android:ems="3"
-                android:textColor="?android:attr/textColorPrimary"
-                android:inputType="number"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"/>
+                android:hint="Cant"
+                app:boxCornerRadiusBottomEnd="4dp"
+                app:boxCornerRadiusBottomStart="4dp"
+                app:boxCornerRadiusTopEnd="4dp"
+                app:boxCornerRadiusTopStart="4dp"
+                app:boxStrokeColor="?attr/colorPrimary"
+                app:hintTextColor="?attr/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editCantidad"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:minWidth="48dp"
+                    android:singleLine="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    tools:text="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/txtUnidad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:layout_marginStart="8dp"
                 android:textColor="?android:attr/textColorSecondary"
-                android:layout_marginStart="4dp"
-                android:text="uds." /> </LinearLayout>
-
+                android:textSize="14sp"
+                tools:text="uds." />
+        </LinearLayout>
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnEditar"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_edit"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Editar producto"
-        android:layout_marginStart="8dp"/>
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/btnEliminar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_delete"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Eliminar producto"
-        android:layout_marginStart="8dp"/>
+        <ImageButton
+            android:id="@+id/btnEditar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Editar producto"
+            android:padding="8dp"
+            app:tint="?attr/colorSecondary" />
+
+        <ImageButton
+            android:id="@+id/btnEliminar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Eliminar producto"
+            android:padding="8dp"
+            app:tint="?attr/colorError" />
+    </LinearLayout>
+
 </LinearLayout>

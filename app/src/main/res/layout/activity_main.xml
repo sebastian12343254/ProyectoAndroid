@@ -1,93 +1,162 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/backgroundColor"
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/searchBar"
+    <!-- Barra de búsqueda -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Buscar producto..."
-        android:inputType="text"
-        android:imeOptions="actionDone" /> <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp">
+        android:textColorHint="@color/secondaryTextColor"
+        app:boxBackgroundColor="@color/surfaceColor"
+        app:endIconMode="clear_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Spinner
-        android:id="@+id/spinnerCategoria"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:textColor="@color/primaryTextColor" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/spinnerOrdenar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/opciones_ordenar" />
-</LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
+    <!-- Filtros -->
     <LinearLayout
+        android:id="@+id/filtersLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="8dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchInputLayout">
 
-        <Button
-            android:id="@+id/btnVerTodos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Todos"
-            style="?android:attr/buttonBarButtonStyle" /> <Button
-        android:id="@+id/btnVerAñadidos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Añadidos"
-        style="?android:attr/buttonBarButtonStyle" />
+        <Spinner
+            android:id="@+id/spinnerCategoria"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@color/surfaceColor"
+            android:popupBackground="@color/surfaceColor"
+            app:cardCornerRadius="6dp"
+            android:textColor="@color/primaryTextColor" />
 
-        <Button
-            android:id="@+id/btnVerNoAñadidos"
+        <Spinner
+            android:id="@+id/spinnerOrdenar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Añadidos"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:layout_height="50dp"
+            android:background="@color/surfaceColor"
+            android:entries="@array/opciones_ordenar"
+            android:minWidth="120dp"
+            android:popupBackground="@color/surfaceColor"
+            app:cardCornerRadius="6dp"
+            android:textColor="@color/primaryTextColor" />
     </LinearLayout>
 
-    <RelativeLayout
+    <!-- Botones de filtro -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/filterButtonsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/surfaceColor"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filtersLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnVerTodos"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todos"
+                android:textColor="@color/primaryTextColor" />
+
+            <Button
+                android:id="@+id/btnVerAñadidos"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Añadidos"
+                android:textColor="@color/primaryTextColor" />
+
+            <Button
+                android:id="@+id/btnVerNoAñadidos"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Añadidos"
+                android:textColor="@color/primaryTextColor" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Lista de productos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toTopOf="@id/bottomActionsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterButtonsCard" />
+
+    <!-- Barra inferior -->
+    <LinearLayout
+        android:id="@+id/bottomActionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surfaceColor"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/btnAgregar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="Agregar Producto" />
+            android:backgroundTint="@color/colorAccent"
+            android:text="Agregar Producto"
+            android:textColor="@color/textOnAccentColor" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/totalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Total: $0.00"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:textSize="16sp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="18sp"
             android:textStyle="bold" />
-    </RelativeLayout>
+    </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,37 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/surfaceColor"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="10dp">
 
-    <EditText
-        android:id="@+id/editNombre"
+    <!-- Campo Nombre -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutNombre"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:hint="Nombre del producto"
-        android:inputType="textCapWords"
-        android:layout_marginBottom="8dp"/>
+        android:textColorHint="@color/secondaryTextColor"
+        app:boxBackgroundColor="@color/surfaceColor"
+        app:hintTextColor="@color/primaryTextColor">
 
-    <EditText
-        android:id="@+id/editPrecio"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:textColor="@color/primaryTextColor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Precio -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutPrecio"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:hint="Precio"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="8dp"/>
+        android:textColorHint="@color/secondaryTextColor"
+        app:boxBackgroundColor="@color/surfaceColor"
+        app:hintTextColor="@color/primaryTextColor"
+        app:prefixText="$"
+        app:prefixTextColor="@color/primaryTextColor">
 
-    <EditText
-        android:id="@+id/editUnidad"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPrecio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:textColor="@color/primaryTextColor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Unidad -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutUnidad"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:hint="Unidad (ej: uds, kg, L, paq)"
-        android:inputType="text"
-        android:layout_marginBottom="16dp"/> <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Categoría:"
-    android:labelFor="@id/spinnerCategoriaAgregar"
-    style="@style/TextAppearance.AppCompat.Small"/> <Spinner
-    android:id="@+id/spinnerCategoriaAgregar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" /> </LinearLayout>
+        android:textColorHint="@color/secondaryTextColor"
+        app:boxBackgroundColor="@color/surfaceColor"
+        app:hintTextColor="@color/primaryTextColor">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editUnidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="@color/primaryTextColor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Categoría -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:labelFor="@id/spinnerCategoriaAgregar"
+        android:text="Categoría:"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/spinnerCategoriaAgregar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@color/surfaceColor" />
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</LinearLayout>
