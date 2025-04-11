@@ -12,17 +12,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-import java.util.List; // Usar List es más genérico
+import java.util.List;
 import java.util.Locale;
 
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHolder> {
 
-    private List<Producto> productosMostrados; // Solo la lista a mostrar
-    private final ProductoAdapterListener listener; // Interfaz para comunicar eventos
+    private List<Producto> productosMostrados;
+    private final ProductoAdapterListener listener;
 
-    // Constructor recibe la lista inicial (puede estar vacía) y el listener
     public ProductoAdapter(List<Producto> productosIniciales, ProductoAdapterListener listener) {
-        this.productosMostrados = new ArrayList<>(productosIniciales); // Copia defensiva
+        this.productosMostrados = new ArrayList<>(productosIniciales);
         this.listener = listener;
     }
 
@@ -30,7 +29,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
     public void submitList(List<Producto> nuevaLista) {
         productosMostrados.clear();
         productosMostrados.addAll(nuevaLista);
-        notifyDataSetChanged(); // Notificar al RecyclerView sobre los cambios
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -43,7 +42,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Producto producto = productosMostrados.get(position);
-        holder.bind(producto, listener); // Pasar producto y listener al ViewHolder
+        holder.bind(producto, listener);
     }
 
     @Override
@@ -51,9 +50,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         return productosMostrados.size();
     }
 
-    // ViewHolder ahora maneja la lógica de binding y listeners internos
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtPrecio, txtUnidad; // <-- AÑADIR txtUnidad
+        TextView txtNombre, txtPrecio, txtUnidad;
         EditText editCantidad;
         CheckBox checkAñadido;
         ImageButton btnEliminar, btnEditar;
@@ -67,12 +65,12 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
             checkAñadido = itemView.findViewById(R.id.checkAñadido);
             btnEliminar = itemView.findViewById(R.id.btnEliminar);
             btnEditar = itemView.findViewById(R.id.btnEditar);
-            txtUnidad = itemView.findViewById(R.id.txtUnidad); // <-- OBTENER REFERENCIA
+            txtUnidad = itemView.findViewById(R.id.txtUnidad);
         }
 
         public void bind(final Producto producto, final ProductoAdapterListener listener) {
             txtNombre.setText(producto.getNombre());
-            txtPrecio.setText(String.format(Locale.getDefault(),"Precio: $%.2f", producto.getPrecio())); // Usar Locale Default para mostrar moneda
+            txtPrecio.setText(String.format(Locale.getDefault(),"Precio: $%.2f", producto.getPrecio()));
 
             // --- CheckBox Añadido ---
             checkAñadido.setOnCheckedChangeListener(null);
@@ -83,7 +81,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
                 }
             });
 
-            // --- EditText Cantidad ---
             if (cantidadWatcher != null) {
                 editCantidad.removeTextChangedListener(cantidadWatcher);
             }
@@ -109,21 +106,15 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
             };
             editCantidad.addTextChangedListener(cantidadWatcher);
 
-            // --- TextView Unidad ---
             String unidad = producto.getUnidad();
-            // Mostrar la unidad si existe y no es la default "uds." (o si prefieres mostrar siempre "uds.")
             if (unidad != null && !unidad.isEmpty()) {
                 txtUnidad.setText(unidad);
-                txtUnidad.setVisibility(View.VISIBLE); // Asegurarse que sea visible
+                txtUnidad.setVisibility(View.VISIBLE);
             } else {
-                // Si la unidad es null o vacía, podríamos ocultarla o mostrar "uds."
-                // txtUnidad.setVisibility(View.GONE); // Opción 1: Ocultar
-                txtUnidad.setText("uds."); // Opción 2: Mostrar default
+                txtUnidad.setText("uds.");
                 txtUnidad.setVisibility(View.VISIBLE);
             }
 
-
-            // --- Botones ---
             btnEliminar.setOnClickListener(v -> listener.onProductoEliminar(producto));
             btnEditar.setOnClickListener(v -> listener.onProductoEditar(producto));
         }

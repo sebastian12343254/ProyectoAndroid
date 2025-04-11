@@ -31,7 +31,6 @@
             android:textColor="@color/primaryTextColor" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Filtros -->
     <LinearLayout
         android:id="@+id/filtersLayout"
         android:layout_width="match_parent"
@@ -65,7 +64,6 @@
             android:textColor="@color/primaryTextColor" />
     </LinearLayout>
 
-    <!-- Botones de filtro -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/filterButtonsCard"
         android:layout_width="match_parent"
@@ -110,7 +108,6 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Lista de productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -123,7 +120,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filterButtonsCard" />
 
-    <!-- Barra inferior -->
     <LinearLayout
         android:id="@+id/bottomActionsLayout"
         android:layout_width="match_parent"

@@ -7,7 +7,6 @@
     android:background="@color/backgroundColor"
     android:padding="16dp">
 
-    <!-- RecyclerView para mostrar productos con card de fondo -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/productosCardView"
         android:layout_width="match_parent"

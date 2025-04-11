@@ -2,12 +2,12 @@ package com.example.listap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources; // Necesaria para obtener recursos
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils; // Para verificar strings vacíos
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log; // Para logs de depuración
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -26,34 +26,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale; // Para formateo de moneda/números
-import java.util.stream.Collectors; // Para usar Streams (requiere API 24+)
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements ProductoAdapterListener {
 
-    // Constantes para SharedPreferences
+
     private static final String PREFS_NAME = "ListaPrefs";
     private static final String KEY_LISTA_PRODUCTOS = "listaProductos";
 
-    // Componentes UI
     private RecyclerView recyclerView;
     private Button btnVerAñadidos, btnVerNoAñadidos, btnVerTodos, btnAgregar;
     private TextView totalText;
     private Spinner spinnerOrdenar, spinnerCategoria;
     private EditText searchBar;
 
-    // Datos y Lógica
-    private ArrayList<Producto> listaProductos = new ArrayList<>(); // Lista maestra
+    private ArrayList<Producto> listaProductos = new ArrayList<>();
     private ProductoAdapter adapter;
     private Gson gson = new Gson();
 
-    // Estado actual de los filtros y orden
     private String categoriaSeleccionada = "Todos";
     private String filtroBusqueda = "";
     private EstadoFiltro estadoFiltro = EstadoFiltro.TODOS;
-    private int ordenSeleccionado = 0; // Índice del spinner de orden
+    private int ordenSeleccionado = 0;
 
-    // Enum para el filtro de estado
     private enum EstadoFiltro { TODOS, ANADIDOS, NO_ANADIDOS }
 
     @Override
@@ -61,33 +57,23 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Cargar datos guardados O generar datos de ejemplo si es necesario
         loadListaProductos();
 
-        // Inicializar Vistas
         initializeUIComponents();
 
-        // Configurar RecyclerView y Adapter
         setupRecyclerView();
 
-        // Configurar Spinners (Categoría y Ordenar)
         setupSpinners();
 
-        // Configurar Barra de Búsqueda
         setupSearchBar();
 
-        // Configurar Botones de Filtro de Estado
         setupFiltroEstadoButtons();
 
-        // Configurar Botón Agregar
         btnAgregar.setOnClickListener(v -> mostrarDialogoAgregarOEditar(null)); // null para modo agregar
 
-        // Aplicar filtros iniciales y mostrar lista
         aplicarFiltrosYSort();
-        actualizarTotal(); // Calcular total inicial
+        actualizarTotal();
     }
-
-    // --- Inicialización y Configuración de UI ---
 
     private void initializeUIComponents() {
         totalText = findViewById(R.id.totalText);
@@ -102,15 +88,12 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
     }
 
     private void setupRecyclerView() {
-        // Pasamos 'this' porque MainActivity implementa ProductoAdapterListener
-        // Iniciamos el adapter con una lista vacía; se poblará con aplicarFiltrosYSort()
         adapter = new ProductoAdapter(new ArrayList<>(), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
 
     private void setupSpinners() {
-        // Spinner Categorías
         ArrayAdapter<CharSequence> adapterCategoria = ArrayAdapter.createFromResource(this,
                 R.array.categorias, android.R.layout.simple_spinner_item);
         adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -125,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
 
-        // Spinner Ordenar
         ArrayAdapter<CharSequence> adapterOrdenar = ArrayAdapter.createFromResource(this,
                 R.array.opciones_ordenar, android.R.layout.simple_spinner_item);
         adapterOrdenar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -134,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 ordenSeleccionado = position;
-                aplicarFiltrosYSort(); // Reaplicar filtros y orden
+                aplicarFiltrosYSort();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {}
@@ -148,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filtroBusqueda = s.toString().toLowerCase().trim();
-                aplicarFiltrosYSort(); // Volver a filtrar y ordenar
+                aplicarFiltrosYSort();
             }
             @Override
             public void afterTextChanged(Editable s) {}
@@ -168,27 +150,22 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         }
     }
 
-    // --- Lógica Principal de Filtrado y Ordenamiento ---
 
     private void aplicarFiltrosYSort() {
-        // 1. Empezar con la lista maestra completa
         List<Producto> listaFiltrada = new ArrayList<>(listaProductos);
 
-        // 2. Filtrar por Categoría (si no es "Todos")
         if (!"Todos".equals(categoriaSeleccionada)) {
             listaFiltrada = listaFiltrada.stream()
                     .filter(p -> p.getCategoria().equals(categoriaSeleccionada))
                     .collect(Collectors.toList());
         }
 
-        // 3. Filtrar por Búsqueda (si hay texto)
         if (!filtroBusqueda.isEmpty()) {
             listaFiltrada = listaFiltrada.stream()
                     .filter(p -> p.getNombre().toLowerCase().contains(filtroBusqueda))
                     .collect(Collectors.toList());
         }
 
-        // 4. Filtrar por Estado (Añadido/No Añadido/Todos) ANTES de ordenar visualmente
         if (estadoFiltro != EstadoFiltro.TODOS) {
             boolean buscarAnadidos = (estadoFiltro == EstadoFiltro.ANADIDOS);
             listaFiltrada = listaFiltrada.stream()
@@ -196,50 +173,42 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                     .collect(Collectors.toList());
         }
 
-        // 5. Ordenar la lista resultante
         ordenarLista(listaFiltrada);
 
-        // 6. Actualizar el Adapter con la lista final filtrada y ordenada
         adapter.submitList(listaFiltrada);
     }
 
     private void ordenarLista(List<Producto> lista) {
         Comparator<Producto> comparator;
         switch (ordenSeleccionado) {
-            case 1: // Precio Ascendente
+            case 1:
                 comparator = Comparator.comparingDouble(Producto::getPrecio);
                 break;
-            case 2: // Nombre Descendente
+            case 2:
                 comparator = (p1, p2) -> p2.getNombre().compareToIgnoreCase(p1.getNombre());
                 break;
-            case 3: // Precio Descendente
+            case 3:
                 comparator = (p1, p2) -> Double.compare(p2.getPrecio(), p1.getPrecio());
                 break;
-            case 0: // Nombre Ascendente (por defecto)
+            case 0:
             default:
                 comparator = Comparator.comparing(Producto::getNombre, String.CASE_INSENSITIVE_ORDER);
                 break;
         }
-        // Usamos sort directamente sobre la lista filtrada antes de pasarla al adapter
         Collections.sort(lista, comparator);
     }
-
-
-    // --- Implementación de ProductoAdapterListener (Callbacks desde el Adapter) ---
 
     @Override
     public void onProductoEstadoCambiado(Producto producto, boolean isChecked) {
         Producto productoEnLista = findProductoInMasterList(producto);
         if (productoEnLista != null && productoEnLista.isAñadido() != isChecked) {
             productoEnLista.setAñadido(isChecked);
-            saveListaProductos(); // Guardar cambio
-            actualizarTotal(); // Recalcular total basado en la lista maestra
-            // Si el filtro de estado está activo, necesitamos refiltrar la vista
+            saveListaProductos();
+            actualizarTotal();
             if (estadoFiltro != EstadoFiltro.TODOS) {
                 aplicarFiltrosYSort();
             }
-            // No es necesario notificar al adapter aquí, el checkbox ya cambió visualmente.
-            // Si el filtro estaba activo, aplicarFiltrosYSort lo hará.
+
         }
     }
 
@@ -248,27 +217,25 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         Producto productoEnLista = findProductoInMasterList(producto);
         if (productoEnLista != null && productoEnLista.getCantidad() != nuevaCantidad) {
             productoEnLista.setCantidad(nuevaCantidad);
-            saveListaProductos(); // Guardar cambio
-            // Recalcular total solo si el producto afectado estaba añadido
+            saveListaProductos();
             if (productoEnLista.isAñadido()) {
                 actualizarTotal();
             }
-            // No es necesario actualizar el adapter, el EditText ya cambió.
         }
     }
 
     @Override
     public void onProductoEliminar(final Producto producto) {
-        // Usamos final producto para acceder dentro del lambda
+
         new AlertDialog.Builder(this)
                 .setTitle("Confirmar Eliminación")
                 .setMessage("¿Seguro que quieres eliminar '" + producto.getNombre() + "'?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
                     boolean removed = listaProductos.remove(producto); // Usa equals()
                     if (removed) {
-                        saveListaProductos();    // Guardar cambios
-                        aplicarFiltrosYSort(); // Actualizar la vista
-                        actualizarTotal();     // Actualizar el total
+                        saveListaProductos();
+                        aplicarFiltrosYSort();
+                        actualizarTotal();
                     } else {
                         Log.w("MainActivity", "Producto a eliminar no encontrado en lista maestra: " + producto.getNombre());
                     }
@@ -279,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
 
     @Override
     public void onProductoEditar(Producto producto) {
-        // Buscar la instancia real en la lista maestra para editarla
         Producto productoParaEditar = findProductoInMasterList(producto);
         if (productoParaEditar != null) {
             mostrarDialogoAgregarOEditar(productoParaEditar);
@@ -289,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         }
     }
 
-    // Helper para encontrar el producto en la lista maestra (usa equals definido en Producto)
     private Producto findProductoInMasterList(Producto productoToFind) {
         for (Producto p : listaProductos) {
             if (p.equals(productoToFind)) {
@@ -298,9 +263,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         }
         return null;
     }
-
-
-    // --- Diálogo Agregar/Editar Producto ---
 
     private void mostrarDialogoAgregarOEditar(final Producto productoAEditar) {
         boolean isEditing = productoAEditar != null;
@@ -314,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         final TextInputEditText editUnidad = dialogView.findViewById(R.id.editUnidad);
         final Spinner spinnerCategoriaAgregar = dialogView.findViewById(R.id.spinnerCategoriaAgregar);
 
-        // Configurar Spinner de categorías en el diálogo (sin la opción "Todos")
         ArrayAdapter<CharSequence> adapterCategoriaOriginal = ArrayAdapter.createFromResource(this,
                 R.array.categorias, android.R.layout.simple_spinner_item);
         List<String> categoriasDialogo = new ArrayList<>();
@@ -329,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         adapterDialogo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategoriaAgregar.setAdapter(adapterDialogo);
 
-        // Si estamos editando, llenar los campos con los datos existentes
         if (isEditing) {
             editNombre.setText(productoAEditar.getNombre());
             editPrecio.setText(String.format(Locale.US, "%.2f", productoAEditar.getPrecio()));
@@ -360,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                         inputLayoutNombre.setError(getString(R.string.toast_nombre_vacio));
                         valido = false;
                     } else {
-                        inputLayoutNombre.setError(null); // Limpiar error si existe
+                        inputLayoutNombre.setError(null);
                     }
 
                     double precio = 0;
@@ -378,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                     }
 
                     if (!valido) {
-                        return; // Detener si hay errores
+                        return;
                     }
 
                     if (isEditing) {
@@ -402,27 +362,21 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
 
     private void actualizarTotal() {
         double total = 0;
-        // Iterar SIEMPRE sobre la lista maestra completa para calcular el total
         for (Producto p : listaProductos) {
             if (p.isAñadido()) {
-                // Asegurarse que la cantidad sea no negativa
                 total += p.getPrecio() * Math.max(0, p.getCantidad());
             }
         }
-        // Formatear el total a dos decimales usando el Locale adecuado
         totalText.setText(String.format(Locale.getDefault(), "Total: $%.2f", total));
     }
-
-
-    // --- Persistencia con SharedPreferences y Gson ---
 
     private void saveListaProductos() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         try {
-            String jsonLista = gson.toJson(listaProductos); // Convertir lista a JSON
+            String jsonLista = gson.toJson(listaProductos);
             editor.putString(KEY_LISTA_PRODUCTOS, jsonLista);
-            editor.apply(); // Guardar asíncronamente
+            editor.apply();
             Log.d("MainActivity", "Lista guardada correctamente. Tamaño: " + listaProductos.size());
         } catch (Exception e) {
             Log.e("MainActivity", "Error al guardar la lista en JSON", e);
@@ -436,25 +390,22 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         if (jsonLista != null) {
             Type type = new TypeToken<ArrayList<Producto>>() {}.getType();
             try {
-                listaProductos = gson.fromJson(jsonLista, type); // Convertir JSON a lista
-                // Verificación adicional por si el JSON guardado era inválido o representaba null
+                listaProductos = gson.fromJson(jsonLista, type);
+
                 if (listaProductos == null) {
                     listaProductos = new ArrayList<>();
                     Log.w("MainActivity", "El JSON cargado resultó en una lista nula, iniciando lista vacía.");
                 }
                 Log.d("MainActivity", "Lista cargada desde SharedPreferences. Tamaño: " + listaProductos.size());
             } catch (Exception e) {
-                // Si hay un error al deserializar (JSON corrupto, cambio de clase Producto), empezar con una lista vacía
                 Log.e("MainActivity", "Error al cargar/deserializar lista desde JSON", e);
                 listaProductos = new ArrayList<>();
             }
         } else {
-            // No hay nada guardado, iniciar lista vacía
             listaProductos = new ArrayList<>();
             Log.d("MainActivity", "No se encontró lista guardada.");
         }
 
-        // Si después de intentar cargar, la lista está vacía, añadir datos de ejemplo por categoría
         if (listaProductos.isEmpty()) {
             Log.i("MainActivity", "Lista vacía después de cargar, añadiendo datos de ejemplo.");
             addSampleDataPerCategory(); // Generar datos de ejemplo
@@ -462,22 +413,19 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         }
     }
 
-    // Método para añadir un producto de ejemplo por cada categoría definida en R.array.categorias
     private void addSampleDataPerCategory() {
-        listaProductos.clear(); // Asegurarse de empezar limpio
+        listaProductos.clear();
         Resources res = getResources();
         String[] categorias = res.getStringArray(R.array.categorias);
-        double precioBase = 10.0; // Precio inicial de ejemplo
+        double precioBase = 10.0;
 
         for (String categoria : categorias) {
-            // Omitir la categoría "Todos"
             if (!categoria.equals("Todos")) {
-                String nombreProducto = "Item de " + categoria; // Nombre genérico
-                // Asegurar precio positivo y con formato US para consistencia interna
-                double precioProducto = Math.max(0.01, precioBase); // Precio mínimo 0.01
+                String nombreProducto = "Item de " + categoria;
+                double precioProducto = Math.max(0.01, precioBase);
                 Producto productoEjemplo = new Producto(nombreProducto, precioProducto, 1, false, categoria);
                 listaProductos.add(productoEjemplo);
-                precioBase += 5.0; // Incrementar el precio para el siguiente item (opcional)
+                precioBase += 5.0;
             }
         }
         Log.i("MainActivity", "Datos de ejemplo por categoría añadidos. Nuevo tamaño: " + listaProductos.size());
