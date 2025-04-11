@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">ListaP</string>
+    <string-array name="opciones_ordenar">
+        <item>Nombre (A-Z)</item>
+        <item>Precio (Menor a Mayor)</item>
+        <item>Nombre (Z-A)</item>
+        <item>Precio (Mayor a Menor)</item>
+    </string-array>
+
+    <string-array name="categorias">
+        <item>Todos</item>
+        <item>Frutas</item>
+        <item>Verduras</item>
+        <item>Lácteos</item>
+        <item>Carnes</item>
+        <item>Pescados</item>
+        <item>Panadería</item>
+        <item>Congelados</item>
+        <item>Snacks</item>
+        <item>Bebidas</item>
+        <item>Limpieza</item>
+        <item>Otros</item> </string-array>
+
+    <string name="dialog_title_agregar">Agregar Producto</string>
+    <string name="dialog_title_editar">Editar Producto</string>
+    <string name="dialog_button_agregar">Agregar</string>
+    <string name="dialog_button_guardar">Guardar</string>
+    <string name="dialog_button_cancelar">Cancelar</string>
+    <string name="toast_precio_invalido">Precio inválido</string>
+    <string name="toast_nombre_vacio">El nombre no puede estar vacío</string>
+
+</resources>

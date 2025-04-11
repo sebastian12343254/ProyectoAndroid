@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+
+    android:padding="16dp">
+
+
+    <!-- RecyclerView para mostrar productos -->
+
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/recyclerViewProductos"
+
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+
+        android:layout_weight="1"/>
+
+
+    <!-- Mostrar total -->
+
+    <TextView
+
+        android:id="@+id/totalText"
+
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+
+        android:text="Total: $0.00"
+
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

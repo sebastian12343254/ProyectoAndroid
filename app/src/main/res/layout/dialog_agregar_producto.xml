@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del producto"
+        android:inputType="textCapWords"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/editPrecio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Precio"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/editUnidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unidad (ej: uds, kg, L, paq)"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"/> <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Categoría:"
+    android:labelFor="@id/spinnerCategoriaAgregar"
+    style="@style/TextAppearance.AppCompat.Small"/> <Spinner
+    android:id="@+id/spinnerCategoriaAgregar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" /> </LinearLayout>
