@@ -3,6 +3,7 @@ package com.example.listap;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,9 +59,15 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.backgroundColor));
+        }
+
+
         loadListaProductos();
 
         initializeUIComponents();
+
 
         setupRecyclerView();
 
@@ -75,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         actualizarTotal();
     }
 
+
+
     private void initializeUIComponents() {
         totalText = findViewById(R.id.totalText);
         recyclerView = findViewById(R.id.recyclerView);
@@ -85,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
         spinnerOrdenar = findViewById(R.id.spinnerOrdenar);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         searchBar = findViewById(R.id.searchBar);
+
     }
 
     private void setupRecyclerView() {
@@ -185,14 +196,28 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                 comparator = Comparator.comparingDouble(Producto::getPrecio);
                 break;
             case 2:
-                comparator = (p1, p2) -> p2.getNombre().compareToIgnoreCase(p1.getNombre());
+                // Manejar explícitamente los nombres nulos (poco probable, pero seguro)
+                comparator = (p1, p2) -> {
+                    String nombre1 = p1.getNombre();
+                    String nombre2 = p2.getNombre();
+                    if (nombre1 == null) return (nombre2 == null) ? 0 : 1;
+                    if (nombre2 == null) return -1;
+                    return nombre2.compareToIgnoreCase(nombre1);
+                };
                 break;
             case 3:
                 comparator = (p1, p2) -> Double.compare(p2.getPrecio(), p1.getPrecio());
                 break;
             case 0:
             default:
-                comparator = Comparator.comparing(Producto::getNombre, String.CASE_INSENSITIVE_ORDER);
+                // Manejar explícitamente los nombres nulos (poco probable, pero seguro)
+                comparator = (p1, p2) -> {
+                    String nombre1 = p1.getNombre();
+                    String nombre2 = p2.getNombre();
+                    if (nombre1 == null) return (nombre2 == null) ? 0 : 1;
+                    if (nombre2 == null) return -1;
+                    return nombre1.compareToIgnoreCase(nombre2);
+                };
                 break;
         }
         Collections.sort(lista, comparator);
@@ -345,10 +370,11 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                         productoAEditar.setNombre(nombre);
                         productoAEditar.setPrecio(precio);
                         productoAEditar.setCategoria(categoriaSeleccionadaDialogo);
-                        productoAEditar.setUnidad(unidad);
+                        productoAEditar.setUnidad(unidad.isEmpty() ? "uds." : unidad); // Valor por defecto
                     } else {
                         int cantidadInicial = 1;
-                        Producto nuevo = new Producto(nombre, precio, cantidadInicial, false, categoriaSeleccionadaDialogo, unidad);
+                        Producto nuevo = new Producto(nombre, precio, cantidadInicial, false, categoriaSeleccionadaDialogo,
+                                unidad.isEmpty() ? "uds." : unidad); // Valor por defecto
                         listaProductos.add(nuevo);
                     }
 
@@ -395,6 +421,13 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
                 if (listaProductos == null) {
                     listaProductos = new ArrayList<>();
                     Log.w("MainActivity", "El JSON cargado resultó en una lista nula, iniciando lista vacía.");
+                } else {
+                    // Asegurarse de que no haya campos nulos que puedan causar problemas
+                    for (Producto p : listaProductos) {
+                        if (p.getNombre() == null) p.setNombre("");
+                        if (p.getCategoria() == null) p.setCategoria("Otros");
+                        if (p.getUnidad() == null) p.setUnidad("uds.");
+                    }
                 }
                 Log.d("MainActivity", "Lista cargada desde SharedPreferences. Tamaño: " + listaProductos.size());
             } catch (Exception e) {
@@ -423,7 +456,8 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
             if (!categoria.equals("Todos")) {
                 String nombreProducto = "Item de " + categoria;
                 double precioProducto = Math.max(0.01, precioBase);
-                Producto productoEjemplo = new Producto(nombreProducto, precioProducto, 1, false, categoria);
+                // Asegurar que se proporciona un valor predeterminado para la unidad
+                Producto productoEjemplo = new Producto(nombreProducto, precioProducto, 1, false, categoria, "uds.");
                 listaProductos.add(productoEjemplo);
                 precioBase += 5.0;
             }

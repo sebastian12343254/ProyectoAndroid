@@ -1,19 +1,32 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ListaP" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.ListaP" parent="Theme.Material3.DayNight.NoActionBar">
 
-            <item name="colorPrimary">@color/primaryColor</item>
-            <item name="colorOnPrimary">@color/primaryTextColor</item>
-            <item name="colorSecondary">@color/secondaryTextColor</item>
-            <item name="colorSecondaryVariant">@color/primaryDarkColor</item>
-            <item name="colorOnSecondary">@color/secondaryTextColor</item>
-            <item name="android:colorBackground">@color/backgroundColor</item>
-            <item name="colorSurface">@color/surfaceColor</item>
-            <item name="colorOnBackground">@color/primaryTextColor</item>
-            <item name="colorOnSurface">@color/primaryTextColor</item>
-            <item name="colorError">@color/errorColor</item>
-            <item name="colorOnError">@color/primaryTextColor</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+
+        <!-- Fondo de la app -->
+        <item name="android:colorBackground">@color/backgroundColor</item>
+        <!-- Color principal -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColor</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Superficie (cards, sheets, spinners) -->
+        <item name="colorSurface">@color/surfaceColor</item>
+        <item name="colorOnSurface">@color/primaryTextColor</item>
+
+        <!-- Textos -->
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+
+        <!-- Botón flotante, íconos activos -->
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Error y advertencia -->
+        <item name="colorError">@color/errorColor</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- Control States -->
+        <item name="android:editTextColor">@color/primaryTextColor</item>
     </style>
-
-    <style name="Theme.ListaP" parent="Base.Theme.ListaP" />
 </resources>

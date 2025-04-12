@@ -1,7 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ListaP" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Theme.ListaP" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Fondo oscuro -->
+        <item name="android:colorBackground">#121212</item>
+        <!-- Color principal -->
+        <item name="colorPrimary">#1E88E5</item>
+        <item name="colorPrimaryVariant">#1565C0</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <!-- Superficie -->
+        <item name="colorSurface">#333333</item>
+        <item name="colorOnSurface">#E0E0E0</item>
+
+        <!-- Textos -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#B0B0B0</item>
+
+        <!-- Botones y acentos -->
+        <item name="colorSecondary">#FF4081</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+
+        <!-- Errores -->
+        <item name="colorError">#FF6F61</item>
+        <item name="colorOnError">#FFFFFF</item>
+
+        <!-- Input Text -->
+        <item name="android:editTextColor">#FFFFFF</item>
     </style>
 </resources>
