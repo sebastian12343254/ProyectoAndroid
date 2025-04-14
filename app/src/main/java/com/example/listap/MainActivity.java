@@ -1,6 +1,7 @@
 package com.example.listap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
     private static final String KEY_LISTA_PRODUCTOS = "listaProductos";
 
     private RecyclerView recyclerView;
-    private Button btnVerAñadidos, btnVerNoAñadidos, btnVerTodos, btnAgregar;
+    private Button btnVerAñadidos, btnVerNoAñadidos, btnVerTodos, btnAgregar, btnAcercaDe;
     private TextView totalText;
     private Spinner spinnerOrdenar, spinnerCategoria;
     private EditText searchBar;
@@ -58,6 +59,15 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnAcercaDe = findViewById(R.id.btnAcercaDe);
+
+        btnAcercaDe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AcercaDe();
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.backgroundColor));
@@ -463,5 +473,10 @@ public class MainActivity extends AppCompatActivity implements ProductoAdapterLi
             }
         }
         Log.i("MainActivity", "Datos de ejemplo por categoría añadidos. Nuevo tamaño: " + listaProductos.size());
+    }
+
+    public void AcercaDe (){
+        Intent i = new Intent(this, AcercaDe.class);
+        startActivity(i);
     }
 }

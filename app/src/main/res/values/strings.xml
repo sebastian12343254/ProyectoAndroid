@@ -19,7 +19,8 @@
         <item>Snacks</item>
         <item>Bebidas</item>
         <item>Limpieza</item>
-        <item>Otros</item> </string-array>
+        <item>Otros</item>
+    </string-array>
 
     <string name="dialog_title_agregar">Agregar Producto</string>
     <string name="dialog_title_editar">Editar Producto</string>
